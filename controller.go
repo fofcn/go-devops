@@ -32,7 +32,10 @@ func (ac *ApplicationContext) Init(obj interface{}) error {
 	ac.pipeline = pipeline.PipelineManager{}
 	ac.session = cluster.ClusterSessionManager{}
 
-	ac.cluster.Init(nil)
+	err := ac.cluster.Init(nil)
+	if err != nil {
+		return err
+	}
 	ac.pipeline.Init(obj.(string))
 	ac.executor.Init()
 	ac.session.Init(&ac.cluster)
@@ -90,17 +93,24 @@ func (ac *ApplicationContext) Start() error {
 
 	}
 
-	// create the session of the tag specified nodes
-	// run the command in parallel
-	// 获取命令
-	// 获取session
-	// 执行
-
 	return nil
 }
 
 func (ac *ApplicationContext) Shutdown() error {
-	return nil
+	err := ac.cluster.Shutdown()
+	if err != nil {
+		log.Fatal(err)
+	}
+	err = ac.pipeline.Shutdown()
+	if err != nil {
+		log.Fatal(err)
+	}
+	err = ac.session.Shutdown()
+	if err != nil {
+		log.Fatal(err)
+	}
+	err = ac.executor.Shutdown()
+	return err
 }
 
 func (ac *ApplicationContext) GetStdout() io.Writer {

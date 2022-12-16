@@ -32,6 +32,17 @@ func (csm *ClusterSessionManager) Init(clusterManager *ClusterManager) error {
 	return nil
 }
 
+func (csm *ClusterSessionManager) Shutdown() error {
+	for _, clusterNodeSessionTable := range csm.clusterNodeSessionTable {
+		for _, nodeSession := range clusterNodeSessionTable {
+			if nodeSession.Client != nil {
+				defer nodeSession.Client.Close()
+			}
+		}
+	}
+	return nil
+}
+
 /*
 创建集群下所有的node会话
 */
@@ -122,7 +133,9 @@ func (csm *ClusterSessionManager) RunCmd(cluster string, nodeId string, cmd stri
 
 	session.Session.Stdout = stdout
 	session.Session.Stderr = stderr
-	return session.Session.Run(cmd)
+	err = session.Session.Run(cmd)
+	defer session.Session.Close()
+	return err
 }
 
 func (csm *ClusterSessionManager) createSingleSession(node ClusterNode) (*ClusterNodeSession, error) {

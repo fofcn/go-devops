@@ -38,6 +38,10 @@ func (pm *PipelineManager) Start() error {
 	return nil
 }
 
+func (pm *PipelineManager) Shutdown() error {
+	return nil
+}
+
 func (pm *PipelineManager) GetNextScript(stage string, pos int) (*string, error) {
 	stagestep := pm.stagestepmanager.GetStageStep(stage)
 	script, err := pm.stagestepmanager.GetStageStepNextScript(&stagestep, pos)

@@ -28,6 +28,10 @@ func (pe PipelineExecutor) Init() error {
 	return nil
 }
 
+func (pe PipelineExecutor) Shutdown() error {
+	return nil
+}
+
 func (pe PipelineExecutor) Exec(session cluster.ClusterSessionManager, script Script) error {
 	return session.RunCmd(script.Cluster, script.NodeId, script.Script, script.IO.GetStdout(), script.IO.GetStderr())
 
