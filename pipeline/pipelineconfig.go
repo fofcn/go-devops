@@ -69,7 +69,6 @@ func (pc *PipelineConfig) loadVariables(config map[string]interface{}) {
 	// put the variable into environments
 	vars := config[variablesKey]
 	for varName, varValue := range vars.(map[interface{}]interface{}) {
-		log.Println(varName.(string), varValue.(string))
 		variables[varName.(string)] = varValue.(string)
 		pc.variables[varName.(string)] = varValue.(string)
 	}

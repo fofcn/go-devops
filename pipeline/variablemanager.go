@@ -1,7 +1,6 @@
 package pipeline
 
 import (
-	"log"
 	"os"
 )
 
@@ -16,7 +15,6 @@ func New(pm *PipelineManager) *VariableManager {
 }
 
 func (vm *VariableManager) Init() error {
-	log.Println("Do nothing here.")
 	return nil
 }
 

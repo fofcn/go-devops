@@ -64,3 +64,7 @@ func (pm *PipelineManager) GetStageStepTags(stage string) ([]StageTag, error) {
 
 	return stageStep.Tag, nil
 }
+
+func (pm *PipelineManager) GetVariableManager() *VariableManager {
+	return &pm.variablemanager
+}

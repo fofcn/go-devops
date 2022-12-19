@@ -37,7 +37,7 @@ func (ac *ApplicationContext) Init(obj interface{}) error {
 		return err
 	}
 	ac.pipeline.Init(obj.(string))
-	ac.executor.Init()
+	ac.executor.Init(ac.pipeline.GetVariableManager())
 	ac.session.Init(&ac.cluster)
 
 	return nil

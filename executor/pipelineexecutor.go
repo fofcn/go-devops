@@ -3,6 +3,8 @@ package executor
 import (
 	"io"
 	"taskmanager/cluster"
+	executor "taskmanager/executor/param"
+	"taskmanager/pipeline"
 )
 
 type Executor interface {
@@ -22,9 +24,11 @@ type Script struct {
 }
 
 type PipelineExecutor struct {
+	parambinder executor.ScriptParamBinder
 }
 
-func (pe PipelineExecutor) Init() error {
+func (pe *PipelineExecutor) Init(variableManager *pipeline.VariableManager) error {
+	pe.parambinder = executor.NewParamBinder(variableManager)
 	return nil
 }
 
@@ -33,6 +37,10 @@ func (pe PipelineExecutor) Shutdown() error {
 }
 
 func (pe PipelineExecutor) Exec(session cluster.ClusterSessionManager, script Script) error {
-	return session.RunCmd(script.Cluster, script.NodeId, script.Script, script.IO.GetStdout(), script.IO.GetStderr())
+	execScript, err := pe.parambinder.Bind(&script.Script)
+	if err != nil {
+		return err
+	}
+	return session.RunCmd(script.Cluster, script.NodeId, execScript, script.IO.GetStdout(), script.IO.GetStderr())
 
 }
