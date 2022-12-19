@@ -48,7 +48,6 @@ func (csm *ClusterSessionManager) Shutdown() error {
 */
 func (csm *ClusterSessionManager) CreateSession(cluster Cluster) error {
 	if _, ok := csm.clusterNodeSessionTable[cluster.Name]; ok {
-		log.Printf("Cluster %v have already existed.", cluster.Name)
 		return nil
 	}
 
@@ -76,8 +75,6 @@ func (csm *ClusterSessionManager) GetSession(clusterName string, nodeId string) 
 	// 如果不连通重新创建会话
 	// 如果连通则直接返回
 	if _, ok := csm.clusterNodeSessionTable[clusterName]; !ok {
-		log.Printf("Cluster %v is not existing.", clusterName)
-
 		// create
 		node, err := csm.clusterManager.GetNodeById(clusterName, nodeId)
 		if err != nil {

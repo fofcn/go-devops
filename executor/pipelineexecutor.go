@@ -42,5 +42,4 @@ func (pe PipelineExecutor) Exec(session cluster.ClusterSessionManager, script Sc
 		return err
 	}
 	return session.RunCmd(script.Cluster, script.NodeId, execScript, script.IO.GetStdout(), script.IO.GetStderr())
-
 }

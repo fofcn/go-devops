@@ -1,8 +1,11 @@
 package main
 
+import "taskmanager/args"
+
 func main() {
-	var context ApplicationContext
-	context.Init("config/pipeline/setup-demo.yaml")
-	context.Start()
-	context.Shutdown()
+	osargs := args.NewAppArgs()
+	controller := NewController(&osargs)
+	controller.Init("config/pipeline/setup-demo.yaml")
+	controller.Start()
+	controller.Shutdown()
 }

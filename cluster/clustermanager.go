@@ -3,6 +3,7 @@ package cluster
 import (
 	"errors"
 	"log"
+	"taskmanager/args"
 	"taskmanager/config"
 	"taskmanager/nlog"
 
@@ -16,9 +17,11 @@ type ClusterManager struct {
 }
 
 func (ClusterManager *ClusterManager) Init(obj interface{}) error {
+	configfile := obj.(args.ApplicationArgs)
+
 	ClusterManager.clusterTable = make(map[string]Cluster)
 	// load cluster
-	clusterList, err := config.ConfigManager(clusterConfig{}).Load(clusterConfigDirectory)
+	clusterList, err := config.ConfigManager(clusterConfig{}).Load(configfile.GetCluster())
 	if err != nil {
 		nlog.FancyHandleError(err)
 		return err

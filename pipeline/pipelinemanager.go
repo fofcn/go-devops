@@ -1,5 +1,7 @@
 package pipeline
 
+import "taskmanager/args"
+
 type PipelineManager struct {
 	pipelineconfig   PipelineConfig
 	variablemanager  VariableManager
@@ -26,7 +28,9 @@ func (pm *PipelineManager) Init(p interface{}) error {
 	pm.stagemanager = StageManager{}
 	pm.stagestepmanager = StageStepManager{}
 
-	pm.pipelineconfig.Init("config/pipeline/setup-demo.yaml")
+	appargs := p.(args.ApplicationArgs)
+
+	pm.pipelineconfig.Init(appargs.GetPipeline())
 	pm.variablemanager.Init()
 	pm.stagemanager.Init(&pm.pipelineconfig)
 	pm.stagestepmanager.Init(&pm.pipelineconfig)

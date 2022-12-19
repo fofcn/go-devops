@@ -5,16 +5,18 @@ import (
 	"io"
 	"log"
 	"os"
+	"taskmanager/args"
 	"taskmanager/cluster"
 	"taskmanager/executor"
 	"taskmanager/pipeline"
 )
 
-type ApplicationContext struct {
+type ApplicationController struct {
 	executor executor.PipelineExecutor
 	cluster  cluster.ClusterManager
 	pipeline pipeline.PipelineManager
 	session  cluster.ClusterSessionManager
+	appargs  *args.ApplicationArgs
 }
 
 type ContextRecord struct {
@@ -26,24 +28,30 @@ type ContextRecord struct {
 
 var contextRecordTable map[string]ContextRecord = map[string]ContextRecord{}
 
-func (ac *ApplicationContext) Init(obj interface{}) error {
-	ac.executor = executor.PipelineExecutor{}
-	ac.cluster = cluster.ClusterManager{}
-	ac.pipeline = pipeline.PipelineManager{}
-	ac.session = cluster.ClusterSessionManager{}
+func NewController(appargs *args.ApplicationArgs) ApplicationController {
+	return ApplicationController{
+		executor: executor.PipelineExecutor{},
+		cluster:  cluster.ClusterManager{},
+		pipeline: pipeline.PipelineManager{},
+		session:  cluster.ClusterSessionManager{},
+		appargs:  appargs,
+	}
+}
 
-	err := ac.cluster.Init(nil)
+func (ac *ApplicationController) Init(obj interface{}) error {
+	err := ac.cluster.Init(*ac.appargs)
 	if err != nil {
 		return err
 	}
-	ac.pipeline.Init(obj.(string))
+
+	ac.pipeline.Init(*ac.appargs)
 	ac.executor.Init(ac.pipeline.GetVariableManager())
 	ac.session.Init(&ac.cluster)
 
 	return nil
 }
 
-func (ac *ApplicationContext) Start() error {
+func (ac *ApplicationController) Start() error {
 	// get the order of the stages
 	stages := ac.pipeline.GetStages()
 	if len(stages) == 0 {
@@ -65,7 +73,6 @@ func (ac *ApplicationContext) Start() error {
 		script, err := ac.pipeline.GetNextScript(stage, scriptPos)
 		for err == nil {
 			// replace the variable if essential
-			log.Println(script)
 
 			// run command in difference cluster and node
 			var scriptExec executor.Script
@@ -77,12 +84,12 @@ func (ac *ApplicationContext) Start() error {
 
 				for _, node := range tag.Node {
 					scriptExec.NodeId = node
-
+					log.Printf("Execute shell command: %v on cluster: %v Node: %v", *script,
+						scriptExec.Cluster, scriptExec.NodeId)
 					err := ac.executor.Exec(ac.session, scriptExec)
 					if err != nil {
-						log.Println(err)
-						continue
-						// return err
+						log.Fatal(err)
+						return err
 					}
 				}
 
@@ -96,7 +103,7 @@ func (ac *ApplicationContext) Start() error {
 	return nil
 }
 
-func (ac *ApplicationContext) Shutdown() error {
+func (ac *ApplicationController) Shutdown() error {
 	err := ac.cluster.Shutdown()
 	if err != nil {
 		log.Fatal(err)
@@ -113,10 +120,10 @@ func (ac *ApplicationContext) Shutdown() error {
 	return err
 }
 
-func (ac *ApplicationContext) GetStdout() io.Writer {
+func (ac *ApplicationController) GetStdout() io.Writer {
 	return os.Stdout
 }
 
-func (ac *ApplicationContext) GetStderr() io.Writer {
+func (ac *ApplicationController) GetStderr() io.Writer {
 	return os.Stderr
 }
