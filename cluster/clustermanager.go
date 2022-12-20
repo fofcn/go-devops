@@ -4,7 +4,6 @@ import (
 	"errors"
 	"taskmanager/args"
 	"taskmanager/config"
-	"taskmanager/zlog"
 
 	"github.com/google/uuid"
 )
@@ -20,7 +19,6 @@ func (ClusterManager *ClusterManager) Init(obj interface{}) error {
 	// load cluster
 	clusterList, err := config.ConfigManager(clusterConfig{}).Load(configfile.GetCluster())
 	if err != nil {
-		zlog.Logger.Error(err)
 		return err
 	}
 

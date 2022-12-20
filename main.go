@@ -1,6 +1,7 @@
 package main
 
 import (
+	"os"
 	"taskmanager/args"
 	"taskmanager/zlog"
 )
@@ -10,7 +11,11 @@ func main() {
 	defer zlog.Logger.Sync()
 	osargs := args.NewAppArgs()
 	controller := NewController(&osargs)
-	controller.Init("config/pipeline/setup-demo.yaml")
+	err := controller.Init()
+	if err != nil {
+		zlog.Logger.Fatal(err)
+		os.Exit(1)
+	}
 	controller.Start()
 	controller.Shutdown()
 }

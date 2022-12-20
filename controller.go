@@ -3,7 +3,6 @@ package main
 import (
 	"errors"
 	"io"
-	"log"
 	"os"
 	"taskmanager/args"
 	"taskmanager/cluster"
@@ -39,17 +38,24 @@ func NewController(appargs *args.ApplicationArgs) ApplicationController {
 	}
 }
 
-func (ac *ApplicationController) Init(obj interface{}) error {
+func (ac *ApplicationController) Init() error {
 	err := ac.cluster.Init(*ac.appargs)
 	if err != nil {
 		return err
 	}
 
-	ac.pipeline.Init(*ac.appargs)
-	ac.executor.Init(ac.pipeline.GetVariableManager())
-	ac.session.Init(&ac.cluster)
+	err = ac.pipeline.Init(*ac.appargs)
+	if err != nil {
+		return err
+	}
 
-	return nil
+	err = ac.executor.Init(ac.pipeline.GetVariableManager())
+	if err != nil {
+		return err
+	}
+
+	err = ac.session.Init(&ac.cluster)
+	return err
 }
 
 func (ac *ApplicationController) Start() error {
@@ -89,7 +95,7 @@ func (ac *ApplicationController) Start() error {
 						scriptExec.Cluster, scriptExec.NodeId)
 					err := ac.executor.Exec(ac.session, scriptExec)
 					if err != nil {
-						log.Fatal(err)
+						zlog.Logger.Fatal(err)
 						return err
 					}
 				}
@@ -107,15 +113,15 @@ func (ac *ApplicationController) Start() error {
 func (ac *ApplicationController) Shutdown() error {
 	err := ac.cluster.Shutdown()
 	if err != nil {
-		log.Fatal(err)
+		zlog.Logger.Fatal(err)
 	}
 	err = ac.pipeline.Shutdown()
 	if err != nil {
-		log.Fatal(err)
+		zlog.Logger.Fatal(err)
 	}
 	err = ac.session.Shutdown()
 	if err != nil {
-		log.Fatal(err)
+		zlog.Logger.Fatal(err)
 	}
 	err = ac.executor.Shutdown()
 	return err

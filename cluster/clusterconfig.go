@@ -43,6 +43,9 @@ func (clusterConfig) Load(configDir string) (interface{}, error) {
 func listDirectory(configDir string) ([]string, error) {
 	var files []string
 	err := filepath.Walk(configDir, func(path string, info os.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
 		if !info.IsDir() {
 			files = append(files, path)
 		}
