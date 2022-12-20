@@ -1,4 +1,4 @@
-package nlog
+package zlog
 
 import (
 	"fmt"

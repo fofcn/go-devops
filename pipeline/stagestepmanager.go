@@ -24,6 +24,10 @@ func (ssm *StageStepManager) GetStageStep(stage string) StageStep {
 	return (ssm.stageStepTable[stage])
 }
 
+func (ssm *StageStepManager) GetStageStepTags(stage string) []StageTag {
+	return (ssm.stageStepTable[stage]).Tag
+}
+
 func (ssm *StageStepManager) GetStageStepNextScript(stageStep *StageStep, pos int) (*StepScript, error) {
 	var script StepScript
 	if len(stageStep.Script) != pos {
@@ -33,5 +37,5 @@ func (ssm *StageStepManager) GetStageStepNextScript(stageStep *StageStep, pos in
 		return &script, nil
 	}
 
-	return nil, errors.New("No scripts available.")
+	return nil, errors.New("no scripts available")
 }

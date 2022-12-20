@@ -60,7 +60,7 @@ func CreateNewSesion(sessionInfo SSHConnectionInfo) (*SSHSession, error) {
 	return &nodeSession, nil
 }
 
-func CLoseSession(nodeSession *SSHSession) {
+func CloseSession(nodeSession *SSHSession) {
 	if nodeSession.Session != nil {
 		defer nodeSession.Session.Close()
 
@@ -68,5 +68,11 @@ func CLoseSession(nodeSession *SSHSession) {
 
 	if nodeSession.Client != nil {
 		defer nodeSession.Client.Close()
+	}
+}
+
+func CloseClient(sshclient *ssh.Client) {
+	if sshclient != nil {
+		defer sshclient.Close()
 	}
 }

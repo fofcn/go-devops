@@ -9,6 +9,7 @@ import (
 	"taskmanager/cluster"
 	"taskmanager/executor"
 	"taskmanager/pipeline"
+	"taskmanager/zlog"
 )
 
 type ApplicationController struct {
@@ -84,7 +85,7 @@ func (ac *ApplicationController) Start() error {
 
 				for _, node := range tag.Node {
 					scriptExec.NodeId = node
-					log.Printf("Execute shell command: %v on cluster: %v Node: %v", *script,
+					zlog.Logger.Infof("Execute shell command: %v on cluster: %v Node: %v", *script,
 						scriptExec.Cluster, scriptExec.NodeId)
 					err := ac.executor.Exec(ac.session, scriptExec)
 					if err != nil {

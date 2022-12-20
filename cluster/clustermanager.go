@@ -2,15 +2,12 @@ package cluster
 
 import (
 	"errors"
-	"log"
 	"taskmanager/args"
 	"taskmanager/config"
-	"taskmanager/nlog"
+	"taskmanager/zlog"
 
 	"github.com/google/uuid"
 )
-
-const clusterConfigDirectory = "config/cluster"
 
 type ClusterManager struct {
 	clusterTable map[string]Cluster
@@ -23,7 +20,7 @@ func (ClusterManager *ClusterManager) Init(obj interface{}) error {
 	// load cluster
 	clusterList, err := config.ConfigManager(clusterConfig{}).Load(configfile.GetCluster())
 	if err != nil {
-		nlog.FancyHandleError(err)
+		zlog.Logger.Error(err)
 		return err
 	}
 
@@ -40,12 +37,10 @@ func (ClusterManager *ClusterManager) Init(obj interface{}) error {
 }
 
 func (ClusterManager *ClusterManager) Start() error {
-	log.Println("Cluster information manager started.")
 	return nil
 }
 
 func (ClusterManager *ClusterManager) Shutdown() error {
-	log.Println("Cluster infrmation manager shutdown now.")
 	return nil
 }
 

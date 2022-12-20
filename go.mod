@@ -5,6 +5,13 @@ go 1.18
 require github.com/jdkato/prose v1.2.1
 
 require (
+	go.uber.org/atomic v1.10.0 // indirect
+	go.uber.org/multierr v1.9.0 // indirect
+	go.uber.org/zap v1.24.0 // indirect
+	gopkg.in/natefinch/lumberjack.v2 v2.0.0 // indirect
+)
+
+require (
 	github.com/deckarep/golang-set v1.7.1 // indirect
 	github.com/euskadi31/go-tokenizer v1.0.0
 	github.com/goinggo/mapstructure v0.0.0-20140717182941-194205d9b4a9 // indirect

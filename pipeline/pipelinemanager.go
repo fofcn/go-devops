@@ -1,6 +1,9 @@
 package pipeline
 
-import "taskmanager/args"
+import (
+	"errors"
+	"taskmanager/args"
+)
 
 type PipelineManager struct {
 	pipelineconfig   PipelineConfig
@@ -18,7 +21,6 @@ type ScriptClusterInfo struct {
 type ScriptContext struct {
 	Script      string
 	Stage       string
-	cusPos      int
 	ClusterInfo []ScriptClusterInfo
 }
 
@@ -61,12 +63,12 @@ func (pm *PipelineManager) GetStages() []string {
 }
 
 func (pm *PipelineManager) GetStageStepTags(stage string) ([]StageTag, error) {
-	stageStep := pm.stagestepmanager.GetStageStep(stage)
-	// if stageStep == nil {
-	// 	return nil, errors.New("Stage " + stage + " does not exists.")
-	// }
+	tags := pm.stagestepmanager.GetStageStepTags(stage)
+	if len(tags) == 0 {
+		return nil, errors.New("cannot get stage " + stage)
+	}
 
-	return stageStep.Tag, nil
+	return tags, nil
 }
 
 func (pm *PipelineManager) GetVariableManager() *VariableManager {

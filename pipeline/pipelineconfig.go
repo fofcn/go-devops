@@ -4,6 +4,7 @@ import (
 	"errors"
 	"io/ioutil"
 	"log"
+	"taskmanager/zlog"
 
 	"github.com/goinggo/mapstructure"
 	"gopkg.in/yaml.v2"
@@ -31,14 +32,14 @@ func (pc *PipelineConfig) Load(filename string) (interface{}, error) {
 	pc.variables = make(map[string]string)
 	buf, err := ioutil.ReadFile(filename)
 	if err != nil {
-		log.Fatalf("Read env setup yaml file error, %v", err)
+		zlog.Logger.Fatalf("Read env setup yaml file error, %v", err)
 		return nil, err
 	}
 
 	var config map[string]interface{}
 	err = yaml.Unmarshal([]byte(buf), &config)
 	if err != nil {
-		log.Fatalf("Unmarshal yaml file error, %v", err)
+		zlog.Logger.Fatalf("Unmarshal yaml file error, %v", err)
 		return nil, err
 	}
 

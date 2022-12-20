@@ -3,8 +3,8 @@ package cluster
 import (
 	"errors"
 	"io"
-	"log"
 	"taskmanager/sshclient"
+	"taskmanager/zlog"
 
 	"golang.org/x/crypto/ssh"
 )
@@ -36,7 +36,7 @@ func (csm *ClusterSessionManager) Shutdown() error {
 	for _, clusterNodeSessionTable := range csm.clusterNodeSessionTable {
 		for _, nodeSession := range clusterNodeSessionTable {
 			if nodeSession.Client != nil {
-				defer nodeSession.Client.Close()
+				sshclient.CloseClient(nodeSession.Client)
 			}
 		}
 	}
@@ -105,7 +105,7 @@ func (csm *ClusterSessionManager) GetSession(clusterName string, nodeId string) 
 */
 func (csm *ClusterSessionManager) CreateClusterSession(clusterName string, node ClusterNode) error {
 	if _, ok := csm.clusterNodeSessionTable[clusterName]; ok {
-		log.Printf("Cluster %v have already existed.", clusterName)
+		zlog.Logger.Info("Cluster %v have already existed.", clusterName)
 		return nil
 	}
 

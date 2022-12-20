@@ -2,6 +2,7 @@ package args
 
 import (
 	"flag"
+	"os"
 )
 
 type ApplicationArgs interface {
@@ -15,11 +16,20 @@ type applicationargs struct {
 	pipeline string
 }
 
+var requiredparameters = [...]string{"cluster", "pipeline"}
+
 func NewAppArgs() ApplicationArgs {
 	var cluster string
 	var pipeline string
-	flag.StringVar(&cluster, "cluster", "config/cluster", "The cluster yaml file must not be empty")
-	flag.StringVar(&pipeline, "pipeline", "", "The pipeline yaml file must not be empty")
+	flag.StringVar(&cluster, "cluster", "config/cluster", "Cluster configuration, see:")
+	flag.StringVar(&pipeline, "pipeline", "", "Pipeline configuration, see:")
+	flag.Parse()
+
+	if cluster == "" || pipeline == "" {
+		flag.Usage()
+		os.Exit(1)
+	}
+
 	return &applicationargs{
 		cluster:  cluster,
 		pipeline: pipeline,
