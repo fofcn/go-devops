@@ -9,6 +9,7 @@ import (
 func main() {
 	zlog.InitLogger()
 	defer zlog.Logger.Sync()
+
 	osargs := args.NewAppArgs()
 	controller := NewController(&osargs)
 	err := controller.Init()

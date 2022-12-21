@@ -2,9 +2,9 @@ package cluster
 
 import (
 	"io/ioutil"
-	"log"
 	"os"
 	"path/filepath"
+	"taskmanager/zlog"
 
 	"gopkg.in/yaml.v2"
 )
@@ -23,14 +23,14 @@ func (clusterConfig) Load(configDir string) (interface{}, error) {
 	for _, file := range files {
 		buf, err := ioutil.ReadFile(file)
 		if err != nil {
-			log.Fatalf("Read env setup yaml file error, %v", err)
+			zlog.Logger.Fatalf("Read env setup yaml file error, %v", err)
 			return nil, err
 		}
 
 		var clusterInfo Cluster
 		err = yaml.Unmarshal([]byte(buf), &clusterInfo)
 		if err != nil {
-			log.Fatalf("Unmarshal yaml file error, %v", err)
+			zlog.Logger.Fatalf("Unmarshal yaml file error, %v", err)
 			return nil, err
 		}
 

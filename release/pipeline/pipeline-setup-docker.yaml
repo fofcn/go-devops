@@ -1,0 +1,33 @@
+variables:
+  
+stage:
+  - setup-docker
+  - setup-docker-compose
+  
+setup-docker:
+  stage: setup-docker
+  script:
+    - echo "Start installing Docker"
+    - sudo apt install -y docker.io 
+    - sudo apt install -y docker-ce
+    - echo "Install Docker complete"
+    - echo "Start configuring Docker"
+    - sudo mkdir -p /etc/docker
+    - curl -o daemon.json https://github.com/fofcn/go-devops/blob/main/README.md
+    - sudo mv daemon.json /etc/docker
+    - sudo systemctl restart docker
+    - sudo systemctl enable docker
+    - echo "Configure Docker complete"
+  tag:
+    - cluster: test-cluster
+      node:
+        - test-node-1
+
+setup-docker-compose:
+  stage: setup-docker-compose
+  script:
+    - echo "Do nothing here"
+  tag:
+    - cluster: test-cluster
+      node:
+        - test-node-1

@@ -1,0 +1,36 @@
+name: task-dev
+node:
+  - name: gitlab-runner
+    id: gitlab-runner
+    description: Gitlab specific runner
+    connection:
+      address: 127.0.0.1:51003
+      proto: tcp
+      username: devops
+      password: 12345678
+      publicKey: Not Support for now
+---
+variables:
+  
+stage:
+  - setup-docker
+  
+setup-docker:
+  stage: setup-docker
+  script:
+    - echo "Start installing Docker"
+    - sudo apt-get install -y docker.io 
+    - sudo apt-get install -y docker-ce
+    - echo "Install Docker complete"
+    - echo "Start configuring Docker"
+    - sudo mkdir -p /etc/docker
+    - curl -o daemon.json https://github.com/fofcn/go-devops/blob/main/README.md
+    - sudo mv daemon.json /etc/docker
+    - sudo systemctl restart docker
+    - sudo systemctl enable docker
+    - echo "Configure Docker complete"
+  tag:
+    - cluster: task-dev
+      node:
+        - dev-node-1
+        - dev-node-2

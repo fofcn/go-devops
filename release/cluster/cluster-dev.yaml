@@ -1,0 +1,11 @@
+name: test-cluster
+node:
+  - name: test-node-1
+    id: test-node-1
+    description: A node for test
+    connection:
+      address: 127.0.0.1:51003
+      proto: tcp
+      username: devops
+      password: 12345678
+      publicKey: Not support for now
