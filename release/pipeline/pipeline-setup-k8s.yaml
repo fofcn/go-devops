@@ -25,10 +25,8 @@ setup-k8s:
     - sudo apt install -y apt-transport-https ca-certificates curl software-properties-common
     - | 
       sudo su - && sudo curl -fsSL https://mirrors.aliyun.com/docker-ce/linux/ubuntu/gpg | sudo apt-key add - && sudo apt install -y docker-ce && sudo add-apt-repository "deb [arch=amd64] https://mirrors.aliyun.com/docker-ce/linux/ubuntu $(lsb_release -cs) stable" && sudo apt update && sudo curl https://mirrors.aliyun.com/kubernetes/apt/doc/apt-key.gpg | sudo apt-key add -
-    - |
-      sudo cat <<EOF >/etc/apt/sources.list.d/kubernetes.list
-      deb https://mirrors.aliyun.com/kubernetes/apt/ kubernetes-xenial main
-      EOF
+    - sudo curl -o kubernetes.list https://raw.githubusercontent.com/fofcn/go-devops/main/release/pipeline/k8s/aliyun-kubernetes.list
+    - sudo mv kubernetes.list /etc/apt/sources.list.d/kubernetes.list 
     - sudo apt update 
     - sudo apt-cache madison kubelet
     - sudo apt-cache madison kubectl | grep 1.18.4-00
