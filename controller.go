@@ -95,7 +95,7 @@ func (ac *ApplicationController) Start() error {
 						scriptExec.Cluster, scriptExec.NodeId)
 					err := ac.executor.Exec(ac.session, scriptExec)
 					if err != nil {
-						zlog.Logger.Fatal(err)
+						zlog.Logger.Fatalf("Execute shell command error, command: %v, %v", scriptExec.Script, err)
 						return err
 					}
 				}
