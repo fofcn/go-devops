@@ -68,7 +68,11 @@ func (pc *PipelineConfig) loadVariables(config map[string]interface{}) {
 	// convert block to string
 	// yaml unmarshal to object
 	// put the variable into environments
+
 	vars := config[variablesKey]
+	if vars == nil {
+		return
+	}
 	for varName, varValue := range vars.(map[interface{}]interface{}) {
 		variables[varName.(string)] = varValue.(string)
 		pc.variables[varName.(string)] = varValue.(string)

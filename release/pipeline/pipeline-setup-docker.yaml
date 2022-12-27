@@ -9,11 +9,10 @@ setup-docker:
   script:
     - echo "Start installing Docker"
     - sudo apt install -y docker.io 
-    - sudo apt install -y docker-ce
     - echo "Install Docker complete"
     - echo "Start configuring Docker"
     - sudo mkdir -p /etc/docker
-    - curl -o daemon.json https://github.com/fofcn/go-devops/blob/main/README.md
+    - curl -o daemon.json https://raw.githubusercontent.com/fofcn/go-devops/main/release/pipeline/docker/daemon.json
     - sudo mv daemon.json /etc/docker
     - sudo systemctl restart docker
     - sudo systemctl enable docker
@@ -26,7 +25,9 @@ setup-docker:
 setup-docker-compose:
   stage: setup-docker-compose
   script:
-    - echo "Do nothing here"
+    - sudo apt install -y docker-compose
+    - sudo docker-compose --help
+
   tag:
     - cluster: test-cluster
       node:

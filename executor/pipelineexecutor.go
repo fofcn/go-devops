@@ -2,6 +2,7 @@ package executor
 
 import (
 	"io"
+	"strings"
 	"taskmanager/cluster"
 	executor "taskmanager/executor/param"
 	"taskmanager/pipeline"
@@ -41,5 +42,30 @@ func (pe PipelineExecutor) Exec(session cluster.ClusterSessionManager, script Sc
 	if err != nil {
 		return err
 	}
-	return session.RunCmd(script.Cluster, script.NodeId, execScript, script.IO.GetStdout(), script.IO.GetStderr())
+	err = session.RunCmd(script.Cluster, script.NodeId, execScript, script.IO.GetStdout(), script.IO.GetStderr())
+	if err != nil {
+		if ignoreErr := pe.ingoreError(script); ignoreErr {
+			return nil
+		}
+	}
+
+	return err
+}
+
+func (pe PipelineExecutor) ingoreError(script Script) bool {
+	var ignoreErrCmds = [128]string{
+		"setenforce",
+		"https://mirrors.aliyun.com/docker-ce/linux/ubuntu/gpg | apt-key add -",
+	}
+
+	for _, cmd := range ignoreErrCmds {
+		if strings.Contains(
+			strings.ToLower(script.Script),
+			strings.ToLower(cmd),
+		) {
+			return true
+		}
+	}
+
+	return false
 }
