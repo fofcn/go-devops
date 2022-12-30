@@ -1,0 +1,114 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mysql-config
+  namespace: tm-dev
+data:
+  my.cnf: |
+    [mysqld]
+    port=3306
+    pid-file        = /var/run/mysqld/mysqld.pid
+    socket          = /var/run/mysqld/mysqld.sock
+    datadir         = /var/lib/mysql
+    secure-file-priv= NULL
+    sql_mode='STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION'
+    default-time_zone = '+8:00'
+
+    # Custom config should go here
+    !includedir /etc/mysql/conf.d/
+  
+  config-file.cnf: |
+    [mysqld]
+    port=3306
+    pid-file=/var/run/mysqld/mysqld.pid
+    socket=/var/run/mysqld/mysqld.sock
+    datadir=/var/lib/mysql
+    log-error=/var/log/mysql/error.log
+    log-bin=/var/lib/mysql/mysql-bin
+    symbolic-links=0
+    max_connections=3000
+    lower_case_table_names=1
+    binlog_format=ROW
+    character_set_server=utf8mb4
+    default_authentication_plugin=mysql_native_password
+    #skip-grant-tables
+    [mysql]
+    default-character-set=utf8mb4
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql8
+  namespace: tm-dev
+  labels:
+    app: mysql8
+spec:
+  selector:
+    matchLabels:
+      app: mysql8
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: mysql8
+    spec:
+      nodeSelector:
+        machine: Master
+      containers:
+        - name: mysql8
+          image: mysql:8.0.31
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 3306
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: 20222022
+          volumeMounts:
+            - name: mycnf
+              mountPath: /etc/mysql/conf.d/my.cnf
+              subPath: my.cnf
+            - name: data-dir
+              mountPath: /var/lib/mysql
+            - name: log-dir
+              mountPath: /var/log/mysql
+            - name: mycnf
+              mountPath: /etc/mysql/conf.d/config-file.cnf
+              subPath: config-file.cnf
+
+      volumes:
+        - name: mycnf
+          configMap:
+            name: mysql-config
+            items: 
+              - key: my.cnf
+                path: my.cnf
+              - key: config-file.cnf
+                path: config-file.cnf
+        - name: data-dir
+          hostPath:
+            path: /app/data/mysql_2
+            type: Directory
+        - name: data-dir
+          hostPath:
+            path: /app/data/mysql_2
+            type: Directory
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql8
+  namespace: tm-dev
+  labels:
+    app: mysql8
+spec:
+  type: NodePort
+  ports:
+    - port: 3306
+      nodePort: 33060
+      targetPort: 3306
+      protocol: TCP
+      name: tcp
+  selector:
+    app: mysql8

@@ -21,6 +21,7 @@ setup-docker:
     - cluster: test-cluster
       node:
         - test-node-1
+        - test-node-2
 
 setup-docker-compose:
   stage: setup-docker-compose
@@ -32,3 +33,4 @@ setup-docker-compose:
     - cluster: test-cluster
       node:
         - test-node-1
+        - test-node-2

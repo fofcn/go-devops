@@ -4,7 +4,6 @@ import (
 	"errors"
 	"io"
 	"taskmanager/sshclient"
-	"taskmanager/zlog"
 
 	"golang.org/x/crypto/ssh"
 )
@@ -74,7 +73,7 @@ func (csm *ClusterSessionManager) GetSession(clusterName string, nodeId string) 
 	// 如果存在则测试连通性
 	// 如果不连通重新创建会话
 	// 如果连通则直接返回
-	if _, ok := csm.clusterNodeSessionTable[clusterName]; !ok {
+	if _, ok := csm.clusterNodeSessionTable[clusterName][nodeId]; !ok {
 		// create
 		node, err := csm.clusterManager.GetNodeById(clusterName, nodeId)
 		if err != nil {
@@ -101,17 +100,15 @@ func (csm *ClusterSessionManager) GetSession(clusterName string, nodeId string) 
 }
 
 /*
-创建集群下单个集群会话并添加到集群中
+创建集群下单个节点会话并添加到集群中
 */
 func (csm *ClusterSessionManager) CreateClusterSession(clusterName string, node ClusterNode) error {
-	if _, ok := csm.clusterNodeSessionTable[clusterName]; ok {
-		zlog.Logger.Info("Cluster %v have already existed.", clusterName)
-		return nil
+	var nodeSessonMap map[string]ClusterNodeSession = csm.clusterNodeSessionTable[clusterName]
+	if nodeSessonMap == nil {
+		// 创建map
+		nodeSessonMap = make(map[string]ClusterNodeSession)
+		csm.clusterNodeSessionTable[clusterName] = nodeSessonMap
 	}
-
-	// 创建map
-	var nodeSessonMap map[string]ClusterNodeSession = make(map[string]ClusterNodeSession)
-	csm.clusterNodeSessionTable[clusterName] = nodeSessonMap
 
 	session, err := csm.createSingleSession(node)
 	if err != nil {

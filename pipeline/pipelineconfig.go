@@ -86,7 +86,7 @@ func (pc *PipelineConfig) loadStages(config map[string]interface{}) {
 	stageI := stageArr.([]interface{})
 	for _, stageStr := range stageI {
 		stages = append(stages, stageStr.(string))
-		pc.stages = append(stages, stageStr.(string))
+		pc.stages = append(pc.stages, stageStr.(string))
 	}
 }
 

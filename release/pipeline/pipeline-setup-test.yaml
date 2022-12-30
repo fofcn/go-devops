@@ -1,0 +1,15 @@
+variables:
+  
+stage:
+  - setup-test
+  
+setup-test:
+  stage: setup-test
+  script:
+    - ls -al
+  tag:
+    - cluster: test-cluster
+      node:
+        - test-node-1
+
+
