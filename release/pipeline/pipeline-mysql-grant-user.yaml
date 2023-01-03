@@ -1,0 +1,20 @@
+variables:
+  - MySQL_PASSWORD: pass1234
+
+stage:
+  - grant-user
+  
+grant-user:
+  stage: grant-user
+  script:
+    - mysql -uuser -p$MySQL_PASSWORD -h 127.0.0.1 -P 3306
+    - create user 'username'@'%' identified by '$MySQL_PASSWORD';
+    - grant all privileges on *.* to 'username'@'%' with grant option;
+    - flush privileges;
+    - exit;
+  tag:
+    - cluster: test-cluster
+      node:
+        - test-node-1
+        - test-node-2
+
