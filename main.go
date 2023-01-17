@@ -1,11 +1,15 @@
 package main
 
 import (
+	"taskmanager/web/http"
+	"taskmanager/web/http/handler"
+
 	"go-micro.dev/v4"
 )
 
 func main() {
-	startdemoservice()
+	starthttpserver()
+	// startdemoservice()
 	// zlog.InitLogger()
 	// defer zlog.Logger.Sync()
 
@@ -26,4 +30,18 @@ func startdemoservice() {
 	)
 	service.Init()
 	service.Run()
+}
+
+func starthttpserver() {
+	httpconfig := http.HttpServerConfig{
+		IP:   "localhost",
+		Port: 8080,
+	}
+
+	httpserver := http.NewHttpServer()
+	httpserver.Config(httpconfig)
+	httpserver.Init()
+	httpserver.RegisterHandler(handler.NewIndexHandler())
+	httpserver.RegisterHandler(handler.NewLoginHandler())
+	httpserver.Start()
 }
