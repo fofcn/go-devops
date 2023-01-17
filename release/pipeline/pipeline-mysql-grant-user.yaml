@@ -6,15 +6,23 @@ stage:
   
 grant-user:
   stage: grant-user
+  support:
+    platform: 
+      type: mysql
+      connection:
+        ip: 127.0.0.1
+        port: 3306
+        username: mysql
+        password: pass1234
+        db: mysql
+        PoolConfig:
+          maxConn: 2
+          maxIdleConn: 1
+          MaxIdleTime: 60
+          Ping: SELECT 1 FROM DUAL
+
   script:
-    - mysql -uuser -p$MySQL_PASSWORD -h 127.0.0.1 -P 3306
     - create user 'username'@'%' identified by '$MySQL_PASSWORD';
     - grant all privileges on *.* to 'username'@'%' with grant option;
     - flush privileges;
-    - exit;
-  tag:
-    - cluster: test-cluster
-      node:
-        - test-node-1
-        - test-node-2
 
