@@ -54,10 +54,12 @@ require (
 
 require (
 	github.com/deckarep/golang-set v1.7.1 // indirect
+	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/euskadi31/go-tokenizer v1.0.0
 	github.com/goinggo/mapstructure v0.0.0-20140717182941-194205d9b4a9 // indirect
 	github.com/google/uuid v1.3.0 // indirect
 	github.com/jdkato/prose/v2 v2.0.0 // indirect
+	github.com/mattn/go-sqlite3 v1.14.16
 	github.com/mingrammer/commonregex v1.0.1 // indirect
 	golang.org/x/crypto v0.4.0 // indirect
 	golang.org/x/sys v0.3.0 // indirect

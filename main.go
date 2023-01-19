@@ -3,12 +3,14 @@ package main
 import (
 	"taskmanager/web/http"
 	"taskmanager/web/http/handler"
+	"taskmanager/web/store"
 
 	"go-micro.dev/v4"
 )
 
 func main() {
-	starthttpserver()
+	store.CreateAndPrint()
+	// starthttpserver()
 	// startdemoservice()
 	// zlog.InitLogger()
 	// defer zlog.Logger.Sync()

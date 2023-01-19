@@ -34,5 +34,7 @@ func (login *loginhandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(err.Error()))
 	}
 
+	// read account info from file
+
 	util.WriteJsonBytes(w, buf)
 }
