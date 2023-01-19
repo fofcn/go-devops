@@ -20,3 +20,9 @@
 # config files
 config/cluster/
 config/pipeline/
+
+#db files
+*.db
+
+# html files
+*.html

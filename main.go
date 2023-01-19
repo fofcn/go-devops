@@ -3,13 +3,12 @@ package main
 import (
 	"taskmanager/web/http"
 	"taskmanager/web/http/handler"
-	"taskmanager/web/store"
 
 	"go-micro.dev/v4"
 )
 
 func main() {
-	store.CreateAndPrint()
+	starthttpserver()
 	// starthttpserver()
 	// startdemoservice()
 	// zlog.InitLogger()
@@ -44,6 +43,10 @@ func starthttpserver() {
 	httpserver.Config(httpconfig)
 	httpserver.Init()
 	httpserver.RegisterHandler(handler.NewIndexHandler())
-	httpserver.RegisterHandler(handler.NewLoginHandler())
+	handler, err := handler.NewLoginHandler()
+	if err != nil {
+		return
+	}
+	httpserver.RegisterHandler(handler)
 	httpserver.Start()
 }

@@ -20,7 +20,7 @@ type sqlitestore struct {
 	db *sql.DB
 }
 
-var store *sqlitestore = nil
+var storedb *sqlitestore = nil
 
 var mutex sync.Mutex
 
@@ -34,15 +34,15 @@ func NewSingleSqliteStore(dir string, initsql string) (SqlStore, error) {
 		return nil, err
 	}
 
-	if store != nil {
-		store = &sqlitestore{
+	if storedb == nil {
+		storedb = &sqlitestore{
 			db: db,
 		}
 	}
 
 	// 检查表结构是否存在
-	checksql := "SELECT name FROM sqlite_master WHERE type='table' AND name='userinfo'"
-	resultset, err := store.Query(checksql)
+	checksql := "SELECT name FROM sqlite_master WHERE type='table' AND name=?"
+	resultset, err := storedb.Query(checksql, "userinfo")
 	if err != nil {
 		mutex.Unlock()
 		return nil, err
@@ -55,15 +55,15 @@ func NewSingleSqliteStore(dir string, initsql string) (SqlStore, error) {
 			return nil, err
 		}
 
-		rowaffect, err := store.Exec(string(sqlbytes))
-		if err != nil || rowaffect == 0 {
+		_, err = storedb.Exec(string(sqlbytes))
+		if err != nil {
 			mutex.Unlock()
 			return nil, err
 		}
 	}
 
 	mutex.Unlock()
-	return *store, nil
+	return *storedb, nil
 }
 
 // Delete implements SqlStore
@@ -101,7 +101,7 @@ func (sqlite sqlitestore) Insert(sql string, args ...any) (int64, error) {
 
 // Query implements SqlStore
 func (sqlite sqlitestore) Query(sql string, args ...any) ([]map[string]interface{}, error) {
-	rows, err := sqlite.db.Query(sql, args)
+	rows, err := sqlite.db.Query(sql, args...)
 	if err != nil {
 		return nil, err
 	}
@@ -148,7 +148,7 @@ func (sqlite sqlitestore) Exec(sql string, args ...any) (int64, error) {
 	if err != nil {
 		return 0, err
 	}
-	res, err := stmt.Exec(args)
+	res, err := stmt.Exec(args...)
 	if err != nil {
 		return 0, err
 	}
