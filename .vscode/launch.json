@@ -11,7 +11,7 @@
             "request": "launch",
             "mode": "auto",
             "program": "${workspaceFolder}",
-            "args": ["-cluster", "./release/cluster/cluster-dev.yaml", "-pipeline", "./release/pipeline/pipeline-setup-k8s.yaml"],
+            "args": ["-c", "./release/cluster/cluster-dev.yaml", "-p", "./release/pipeline/pipeline-setup-test.yaml"],
         }
     ]
 }

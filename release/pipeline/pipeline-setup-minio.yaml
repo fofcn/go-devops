@@ -1,0 +1,19 @@
+variables:
+  
+stage:
+  - setup-minio
+  
+setup-minio:
+  stage: setup-minio
+  script:
+    - sudo mkdir -p /app/data/minio
+    - curl -o minio-docker.yaml https://raw.githubusercontent.com/fofcn/go-devops/main/release/pipeline/minio/minio-docker-standalone.yaml
+    - sudo mv minio-docker.yaml /app/data/minio
+    - cd /app/data/minio
+    - sudo docker-compose -f minio-docker.yaml up -d
+  tag:
+    - cluster: test-cluster
+      node:
+        - test-node-1
+
+

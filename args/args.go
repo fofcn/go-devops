@@ -21,8 +21,8 @@ var requiredparameters = [...]string{"cluster", "pipeline"}
 func NewAppArgs() ApplicationArgs {
 	var cluster string
 	var pipeline string
-	flag.StringVar(&cluster, "cluster", "config/cluster", "Cluster configuration, see:")
-	flag.StringVar(&pipeline, "pipeline", "", "Pipeline configuration, see:")
+	flag.StringVar(&cluster, "c", "config/cluster", "Cluster configuration, see:")
+	flag.StringVar(&pipeline, "p", "", "Pipeline configuration, see:")
 	flag.Parse()
 
 	if cluster == "" || pipeline == "" {

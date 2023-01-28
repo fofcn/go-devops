@@ -1,0 +1,18 @@
+application:
+  name: CCloud
+
+server:
+  host: localhost
+  port: 8080
+
+ccloud:
+  store:
+    image: /app/images
+    video: /app/videos
+  datasource:
+    driver:
+    url: 
+    user:
+    password:
+  
+  

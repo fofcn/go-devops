@@ -9,3 +9,12 @@ node:
       username: devops
       password: 12345678
       publicKey: Not support for now
+  - name: test-node-2
+    id: test-node-2
+    description: A node for test
+    connection:
+      address: 127.0.0.1:51003
+      proto: tcp
+      username: devops
+      password: 12345678
+      publicKey: Not support for now

@@ -1,0 +1,28 @@
+variables:
+  - MySQL_PASSWORD: pass1234
+
+stage:
+  - grant-user
+  
+grant-user:
+  stage: grant-user
+  support:
+    platform: 
+      type: mysql
+      connection:
+        ip: 127.0.0.1
+        port: 3306
+        username: mysql
+        password: pass1234
+        db: mysql
+        PoolConfig:
+          maxConn: 2
+          maxIdleConn: 1
+          MaxIdleTime: 60
+          Ping: SELECT 1 FROM DUAL
+
+  script:
+    - create user 'username'@'%' identified by '$MySQL_PASSWORD';
+    - grant all privileges on *.* to 'username'@'%' with grant option;
+    - flush privileges;
+
