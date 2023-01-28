@@ -8,3 +8,12 @@ type UserModel struct {
 	Password   string
 	CreateTime time.Time
 }
+
+type MediaModel struct {
+	Id             int
+	FileName       string
+	StorePath      string
+	FileCreateTime time.Time
+	MediaType      int
+	CreateTime     time.Time
+}

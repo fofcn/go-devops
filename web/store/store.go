@@ -26,6 +26,10 @@ var mutex sync.Mutex
 
 func NewSingleSqliteStore(dir string, initsql string) (SqlStore, error) {
 	mutex.Lock()
+	if storedb != nil {
+		mutex.Unlock()
+		return storedb, nil
+	}
 	dbfile := dir + "/ccloud.db"
 
 	db, err := sql.Open("sqlite3", dbfile)
@@ -42,24 +46,28 @@ func NewSingleSqliteStore(dir string, initsql string) (SqlStore, error) {
 
 	// 检查表结构是否存在
 	checksql := "SELECT name FROM sqlite_master WHERE type='table' AND name=?"
-	resultset, err := storedb.Query(checksql, "userinfo")
-	if err != nil {
-		mutex.Unlock()
-		return nil, err
-	}
-
-	if len(resultset) == 0 {
-		sqlbytes, err := ioutil.ReadFile(initsql)
+	checktables := []string{`userinfo`, `media_file`}
+	for _, table := range checktables {
+		resultset, err := storedb.Query(checksql, table)
 		if err != nil {
 			mutex.Unlock()
 			return nil, err
 		}
 
-		_, err = storedb.Exec(string(sqlbytes))
-		if err != nil {
-			mutex.Unlock()
-			return nil, err
+		if len(resultset) == 0 {
+			sqlbytes, err := ioutil.ReadFile(initsql)
+			if err != nil {
+				mutex.Unlock()
+				return nil, err
+			}
+
+			_, err = storedb.Exec(string(sqlbytes))
+			if err != nil {
+				mutex.Unlock()
+				return nil, err
+			}
 		}
+
 	}
 
 	mutex.Unlock()

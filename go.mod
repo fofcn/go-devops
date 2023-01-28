@@ -34,6 +34,7 @@ require (
 	github.com/shurcooL/sanitized_anchor_name v1.0.0 // indirect
 	github.com/stretchr/testify v1.8.1 // indirect
 	github.com/urfave/cli/v2 v2.3.0 // indirect
+	github.com/vibrantbyte/go-antpath v1.1.1 // indirect
 	github.com/xanzy/ssh-agent v0.3.0 // indirect
 	go-micro.dev/v4 v4.9.0 // indirect
 	go.uber.org/atomic v1.10.0 // indirect
